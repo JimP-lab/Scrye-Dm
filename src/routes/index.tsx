@@ -1,24 +1,381 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
 function Index() {
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
+    <div className="min-h-screen bg-background text-foreground">
+      <Nav />
+      <main>
+        <Hero />
+        <Problem />
+        <HowItWorks />
+        <Scenarios />
+        <Waitlist />
+      </main>
+      <Footer />
     </div>
+  );
+}
+
+function Nav() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
+        <a href="#top" className="group flex items-center gap-2">
+          <span className="font-display text-2xl font-semibold tracking-tight" style={{ fontFamily: "var(--font-display)" }}>
+            Scrye
+          </span>
+          <span className="hidden text-[10px] uppercase tracking-[0.2em] text-muted-foreground sm:inline">
+            for foundry
+          </span>
+        </a>
+        <a
+          href="#waitlist"
+          className="rounded-full border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 px-4 py-2 text-sm font-medium text-[color:var(--brass)] transition hover:bg-[color:var(--brass)]/20"
+        >
+          Join waitlist
+        </a>
+      </div>
+    </header>
+  );
+}
+
+function Hero() {
+  return (
+    <section id="top" className="relative overflow-hidden">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 opacity-[0.35]"
+        style={{
+          background:
+            "radial-gradient(60% 50% at 20% 0%, oklch(0.30 0.08 78 / 0.35), transparent 60%), radial-gradient(50% 40% at 90% 20%, oklch(0.28 0.06 200 / 0.35), transparent 60%)",
+        }}
+      />
+      <div className="relative mx-auto max-w-6xl px-5 pb-20 pt-16 sm:px-8 sm:pt-24 md:pb-28 md:pt-32">
+        <div className="max-w-3xl">
+          <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-border px-3 py-1 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+            <span className="h-1.5 w-1.5 rounded-full bg-[color:var(--brass)]" />
+            Pre-launch · Waitlist open
+          </div>
+          <h1 className="text-4xl font-semibold leading-[1.05] tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+            Session prep is eating the nights{" "}
+            <span className="italic text-[color:var(--brass)]" style={{ fontFamily: "var(--font-display)" }}>
+              you should be playing.
+            </span>
+          </h1>
+          <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted-foreground sm:text-xl">
+            Scrye turns your rough notes — the bullet points you scrawled at lunch — into
+            NPCs, encounters, and scenes you can drop straight into Foundry VTT. No more
+            Thursday-night stat-block panic.
+          </p>
+          <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
+            <a
+              href="#waitlist"
+              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] shadow-[0_10px_40px_-10px_oklch(0.78_0.11_78_/_0.6)] transition hover:brightness-110"
+            >
+              Join the waitlist
+              <span aria-hidden>→</span>
+            </a>
+            <span className="text-sm text-muted-foreground">
+              Built by a DM. Free during beta.
+            </span>
+          </div>
+        </div>
+      </div>
+      <div className="mx-auto max-w-6xl border-t border-border/60 px-5 sm:px-8" />
+    </section>
+  );
+}
+
+function Problem() {
+  const pains = [
+    {
+      k: "01",
+      t: "Foundry has a learning cliff",
+      d: "You wanted to run a game. Instead you're four YouTube tabs deep trying to figure out why the token vision isn't working and where compendium imports actually go.",
+    },
+    {
+      k: "02",
+      t: "Encounters and NPCs eat entire evenings",
+      d: "One balanced fight, one shopkeeper with a personality, one dungeon room with actual detail — three hours, easy. And that's if the CR math cooperates.",
+    },
+    {
+      k: "03",
+      t: "Prep burnout kills more campaigns than TPKs",
+      d: "Nobody's group ended because the villain wasn't menacing enough. They ended because the DM was tired on a Tuesday and cancelled one time too many.",
+    },
+  ];
+  return (
+    <section className="border-t border-border/60 bg-[color:var(--ink-2)]/40">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div className="max-w-2xl">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">The real problem</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+            You didn't sign up to be a full-time content producer.
+          </h2>
+        </div>
+        <div className="mt-12 grid gap-6 md:grid-cols-3">
+          {pains.map((p) => (
+            <div
+              key={p.k}
+              className="rounded-2xl border border-border bg-[color:var(--ink)]/60 p-6 transition hover:border-[color:var(--brass)]/40"
+            >
+              <div
+                className="mb-4 text-sm font-medium text-[color:var(--brass)]"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                {p.k}
+              </div>
+              <h3 className="mb-3 text-xl font-semibold">{p.t}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{p.d}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function HowItWorks() {
+  const steps = [
+    {
+      n: "1",
+      t: "Drop in your rough notes",
+      d: "Bullet points, half-sentences, a rough map sketch described in one line. However you actually take notes.",
+      sample: "> party arrives at the mill\n> hag pretending to be miller\n> she wants their names",
+    },
+    {
+      n: "2",
+      t: "Scrye builds the scene",
+      d: "NPC dialogue hooks, a balanced encounter for your party's level, room descriptions, secret DCs — all in your voice, not GPT-flavored purple prose.",
+      sample: "NPC · Old Merra (Green Hag, CR 5)\nHook: offers stew, asks each PC's true name\nEncounter: Merra + 2 twig blights",
+    },
+    {
+      n: "3",
+      t: "Import straight into Foundry",
+      d: "Actor JSON, scene notes, and journal entries in the format Foundry actually wants. One click, no plugin gymnastics.",
+      sample: "scrye-export.zip\n  actors/old-merra.json\n  scenes/millhouse.json\n  journals/hooks.md",
+    },
+  ];
+  return (
+    <section className="border-t border-border/60">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div className="max-w-2xl">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">How it works</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+            Three steps. Notes in, session out.
+          </h2>
+        </div>
+        <ol className="mt-14 space-y-10 md:space-y-16">
+          {steps.map((s, i) => (
+            <li key={s.n} className="grid gap-6 md:grid-cols-12 md:gap-10">
+              <div className="md:col-span-5">
+                <div className="flex items-baseline gap-4">
+                  <span
+                    className="text-5xl font-semibold text-[color:var(--brass)] sm:text-6xl"
+                    style={{ fontFamily: "var(--font-display)" }}
+                  >
+                    {s.n}
+                  </span>
+                  <div className="h-px flex-1 bg-border" />
+                </div>
+                <h3 className="mt-4 text-2xl font-semibold sm:text-3xl">{s.t}</h3>
+                <p className="mt-3 max-w-md text-muted-foreground">{s.d}</p>
+              </div>
+              <div className="md:col-span-7">
+                <pre
+                  className="overflow-x-auto rounded-xl border border-border bg-[color:var(--ink)]/70 p-5 text-sm leading-relaxed text-[color:var(--ivory)]/90"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  <span className="mb-3 block text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                    {i === 0 ? "your notes" : i === 1 ? "scrye output" : "foundry package"}
+                  </span>
+                  {s.sample}
+                </pre>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+  );
+}
+
+function Scenarios() {
+  const items = [
+    {
+      when: "10 minutes before session",
+      before: "Random encounter? Improvise 4 goblins and hope.",
+      after: "Paste the terrain and party level. Get a themed encounter with tactics notes.",
+    },
+    {
+      when: "Mid-session, unexpectedly",
+      before: "The NPC your players won't stop talking to has one line of prep.",
+      after: "Three dialogue hooks, a secret, and what they want. In under a minute.",
+    },
+    {
+      when: "Dungeon room you forgot to detail",
+      before: '"Uh… it\'s a room. There\'s a table. And a… chair."',
+      after: "Read-aloud description, two interactables, and one thing that might be trapped.",
+    },
+    {
+      when: "Session recap on Sunday",
+      before: "You'll write it tomorrow. You won't write it tomorrow.",
+      after: "Drop your session notes, get a recap your players will actually read.",
+    },
+  ];
+  return (
+    <section className="border-t border-border/60 bg-[color:var(--ink-2)]/40">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div className="max-w-2xl">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">Where this actually helps</p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+            Moments every DM knows too well.
+          </h2>
+        </div>
+        <div className="mt-12 grid gap-5 sm:grid-cols-2">
+          {items.map((it) => (
+            <article
+              key={it.when}
+              className="rounded-2xl border border-border bg-[color:var(--ink)]/60 p-6 transition hover:border-[color:var(--brass)]/40"
+            >
+              <div
+                className="mb-5 text-xs uppercase tracking-[0.18em] text-muted-foreground"
+                style={{ fontFamily: "var(--font-mono)" }}
+              >
+                {it.when}
+              </div>
+              <div className="space-y-4">
+                <div className="flex gap-3">
+                  <span className="mt-1 text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                    Before
+                  </span>
+                  <p className="flex-1 text-[color:var(--ivory)]/70 line-through decoration-border">
+                    {it.before}
+                  </p>
+                </div>
+                <div className="flex gap-3">
+                  <span className="mt-1 text-xs font-medium uppercase tracking-wider text-[color:var(--brass)]">
+                    With Scrye
+                  </span>
+                  <p className="flex-1 text-[color:var(--ivory)]">{it.after}</p>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Waitlist() {
+  const [email, setEmail] = useState("");
+  const [status, setStatus] = useState<"idle" | "error" | "ok">("idle");
+  const [message, setMessage] = useState("");
+
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim();
+    if (!trimmed || trimmed.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
+      setStatus("error");
+      setMessage("That doesn't look like a valid email.");
+      return;
+    }
+    setStatus("ok");
+    setMessage("You're on the list. We'll email you before we open the doors.");
+    setEmail("");
+  };
+
+  return (
+    <section id="waitlist" className="border-t border-border/60">
+      <div className="mx-auto max-w-3xl px-5 py-24 text-center sm:px-8 sm:py-32">
+        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">Get early access</p>
+        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+          Spend the week thinking about the story,{" "}
+          <span className="italic text-[color:var(--brass)]" style={{ fontFamily: "var(--font-display)" }}>
+            not the stat blocks.
+          </span>
+        </h2>
+        <p className="mx-auto mt-5 max-w-xl text-muted-foreground">
+          Early access is invite-only. Waitlist folks get in first, get it free during beta,
+          and get to shape what it does next.
+        </p>
+
+        {status === "ok" ? (
+          <div
+            role="status"
+            className="mx-auto mt-10 max-w-md rounded-2xl border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 p-6"
+          >
+            <div className="mb-2 text-xl font-semibold text-[color:var(--brass)]">You're in.</div>
+            <p className="text-sm text-[color:var(--ivory)]/90">{message}</p>
+          </div>
+        ) : (
+          <form
+            onSubmit={onSubmit}
+            noValidate
+            className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
+          >
+            <label htmlFor="email" className="sr-only">
+              Email address
+            </label>
+            <input
+              id="email"
+              type="email"
+              required
+              maxLength={254}
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                if (status === "error") setStatus("idle");
+              }}
+              placeholder="dm@yourtable.com"
+              className="flex-1 rounded-full border border-border bg-[color:var(--ink)]/70 px-5 py-3 text-base text-[color:var(--ivory)] placeholder:text-muted-foreground/70 focus:border-[color:var(--brass)] focus:outline-none"
+              aria-invalid={status === "error"}
+              aria-describedby="email-msg"
+            />
+            <button
+              type="submit"
+              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110"
+            >
+              Join waitlist
+            </button>
+          </form>
+        )}
+        <p
+          id="email-msg"
+          className={`mt-4 min-h-[1.25rem] text-sm ${
+            status === "error" ? "text-[color:var(--destructive)]" : "text-muted-foreground"
+          }`}
+        >
+          {status === "error" ? message : status === "idle" ? "No spam. One launch email." : ""}
+        </p>
+      </div>
+    </section>
+  );
+}
+
+function Footer() {
+  return (
+    <footer className="border-t border-border/60">
+      <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-4 px-5 py-8 text-sm text-muted-foreground sm:flex-row sm:items-center sm:px-8">
+        <div className="flex items-center gap-3">
+          <span className="font-semibold text-[color:var(--ivory)]" style={{ fontFamily: "var(--font-display)" }}>
+            Scrye
+          </span>
+          <span className="text-muted-foreground/70">·</span>
+          <span>Made by a DM, for DMs.</span>
+        </div>
+        <div className="flex items-center gap-4">
+          <span>© {new Date().getFullYear()} Scrye</span>
+          <span className="text-muted-foreground/50">·</span>
+          <span>Not affiliated with Wizards of the Coast or Foundry Gaming LLC.</span>
+        </div>
+      </div>
+    </footer>
   );
 }
