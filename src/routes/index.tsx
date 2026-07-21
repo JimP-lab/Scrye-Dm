@@ -1,5 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  BookOpen,
+  Check,
+  FileText,
+  Folder,
+  Plus,
+  Search,
+  Shield,
+  Skull,
+  Sparkles,
+  Swords,
+  Users,
+  Wand2,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -13,6 +27,7 @@ function Index() {
         <Hero />
         <Problem />
         <HowItWorks />
+        <Walkthrough />
         <Scenarios />
         <Waitlist />
       </main>
@@ -202,6 +217,353 @@ function HowItWorks() {
         </ol>
       </div>
     </section>
+  );
+}
+
+function Walkthrough() {
+  const steps = [
+    {
+      n: "01",
+      t: "Sign up & set up your campaign",
+      d: "Name your campaign, pick a system, and hook Scrye up to your Foundry world.",
+      panel: <SignupPanel />,
+    },
+    {
+      n: "02",
+      t: "Bring in your sources",
+      d: "Session notes, villain arcs, player backstories, world bible — one place, not seven Discord threads.",
+      panel: <SourcesPanel />,
+    },
+    {
+      n: "03",
+      t: "Scrye organizes and generates",
+      d: "NPCs, encounters, and scenes — pulled from your canon, ready to run.",
+      panel: <GeneratedPanel />,
+    },
+    {
+      n: "04",
+      t: "Drop into Foundry, run the table",
+      d: "One sync. Actors, scenes, and journals land in your world. You go play.",
+      panel: <SyncPanel />,
+    },
+  ];
+  return (
+    <section className="border-t border-border/60">
+      <div className="mx-auto max-w-6xl px-5 py-20 sm:px-8 sm:py-28">
+        <div className="max-w-2xl">
+          <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">
+            A look inside
+          </p>
+          <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
+            Your writers' room for the whole campaign.
+          </h2>
+          <p className="mt-5 max-w-xl text-muted-foreground">
+            You're the showrunner. Scrye keeps the sources, canon, and
+            production notes in order — so your table time is spent playing the
+            story, not managing files.
+          </p>
+        </div>
+
+        <div className="mt-14 grid gap-10 md:grid-cols-2 md:gap-x-10 md:gap-y-16">
+          {steps.map((s) => (
+            <figure key={s.n} className="flex flex-col">
+              <MockFrame>{s.panel}</MockFrame>
+              <figcaption className="mt-5 flex items-start gap-4">
+                <span
+                  className="text-sm font-medium text-[color:var(--brass)]"
+                  style={{ fontFamily: "var(--font-mono)" }}
+                >
+                  {s.n}
+                </span>
+                <div>
+                  <h3 className="text-lg font-semibold">{s.t}</h3>
+                  <p className="mt-1 text-sm leading-relaxed text-muted-foreground">
+                    {s.d}
+                  </p>
+                </div>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function MockFrame({ children }: { children: React.ReactNode }) {
+  return (
+    <div
+      className="rounded-2xl border border-border bg-[color:var(--ink)]/80 p-1 shadow-[0_30px_80px_-30px_oklch(0.08_0.02_260_/_0.9)]"
+    >
+      <div className="flex items-center gap-1.5 px-3 py-2">
+        <span className="h-2 w-2 rounded-full bg-[color:var(--ink-3)]" />
+        <span className="h-2 w-2 rounded-full bg-[color:var(--ink-3)]" />
+        <span className="h-2 w-2 rounded-full bg-[color:var(--ink-3)]" />
+      </div>
+      <div className="rounded-xl border border-border/70 bg-[color:var(--ink-2)]/70 p-5">
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function SignupPanel() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-2 text-xs uppercase tracking-[0.18em] text-muted-foreground">
+        <Sparkles className="h-3.5 w-3.5 text-[color:var(--brass)]" />
+        New campaign
+      </div>
+      <div>
+        <label className="mb-1.5 block text-xs text-muted-foreground">
+          Campaign name
+        </label>
+        <div className="rounded-lg border border-border bg-[color:var(--ink)]/70 px-3 py-2.5 text-sm text-[color:var(--ivory)]">
+          The Hollow Crown
+        </div>
+      </div>
+      <div>
+        <label className="mb-1.5 block text-xs text-muted-foreground">
+          System
+        </label>
+        <div className="flex items-center justify-between rounded-lg border border-border bg-[color:var(--ink)]/70 px-3 py-2.5 text-sm text-[color:var(--ivory)]">
+          <span>D&D 5e</span>
+          <span className="text-muted-foreground">▾</span>
+        </div>
+      </div>
+      <div className="flex items-center justify-between rounded-lg border border-border bg-[color:var(--ink)]/70 px-3 py-2.5">
+        <div>
+          <div className="text-sm text-[color:var(--ivory)]">Connect to Foundry</div>
+          <div className="text-xs text-muted-foreground">Sync actors, scenes, journals</div>
+        </div>
+        <span className="relative inline-flex h-5 w-9 items-center rounded-full bg-[color:var(--brass)]">
+          <span className="ml-4 h-4 w-4 rounded-full bg-[color:var(--ink)]" />
+        </span>
+      </div>
+      <button
+        type="button"
+        className="mt-2 w-full rounded-lg bg-[color:var(--brass)] px-4 py-2.5 text-sm font-semibold text-[color:var(--ink)]"
+      >
+        Create campaign
+      </button>
+    </div>
+  );
+}
+
+function SourcesPanel() {
+  const items = [
+    { icon: FileText, label: "Session 12 notes.txt", tag: "session" },
+    { icon: Skull, label: "Villain backstory", tag: "canon" },
+    { icon: Folder, label: "Player backstories/", tag: "4 files" },
+    { icon: BookOpen, label: "World bible", tag: "canon" },
+    { icon: FileText, label: "Faction map — Ashfell", tag: "note" },
+  ];
+  return (
+    <div className="grid gap-4 sm:grid-cols-[1fr_1.1fr]">
+      <div className="rounded-lg border border-border bg-[color:var(--ink)]/60 p-3">
+        <div className="mb-3 flex items-center gap-2 rounded-md bg-[color:var(--ink-2)]/70 px-2 py-1.5 text-xs text-muted-foreground">
+          <Search className="h-3.5 w-3.5" />
+          Search sources
+        </div>
+        <ul className="space-y-1">
+          {items.map((i, idx) => (
+            <li
+              key={i.label}
+              className={`flex items-center justify-between gap-2 rounded-md px-2 py-1.5 text-xs ${
+                idx === 1
+                  ? "bg-[color:var(--brass)]/10 text-[color:var(--ivory)]"
+                  : "text-[color:var(--ivory)]/85 hover:bg-[color:var(--ink-2)]/60"
+              }`}
+            >
+              <span className="flex items-center gap-2 truncate">
+                <i.icon className="h-3.5 w-3.5 text-[color:var(--brass)]" />
+                <span className="truncate">{i.label}</span>
+              </span>
+              <span className="shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+                {i.tag}
+              </span>
+            </li>
+          ))}
+        </ul>
+        <div className="mt-3 flex items-center gap-2 rounded-md border border-dashed border-border px-2 py-1.5 text-xs text-muted-foreground">
+          <Plus className="h-3.5 w-3.5" />
+          Add note or upload…
+        </div>
+      </div>
+      <div className="rounded-lg border border-border bg-[color:var(--ink)]/60 p-4">
+        <div className="mb-2 flex items-center justify-between">
+          <div className="text-sm font-semibold text-[color:var(--ivory)]">
+            Villain backstory
+          </div>
+          <span className="rounded-full bg-[color:var(--brass)]/15 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[color:var(--brass)]">
+            canon
+          </span>
+        </div>
+        <p className="text-xs leading-relaxed text-muted-foreground">
+          Lord Vesric wasn't born cruel — the Hollow Crown chose him after his
+          sister's death at the siege of Ashfell. He believes he's saving the
+          realm. Only Merra knows what the crown really wants.
+        </p>
+        <div className="mt-3 flex flex-wrap gap-1.5">
+          {["#vesric", "#hollow-crown", "#ashfell"].map((t) => (
+            <span
+              key={t}
+              className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {t}
+            </span>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GeneratedPanel() {
+  const tabs = [
+    { icon: Users, label: "NPCs", count: 12, active: true },
+    { icon: Swords, label: "Encounters", count: 7 },
+    { icon: BookOpen, label: "Scenes", count: 5 },
+  ];
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center gap-1 rounded-lg border border-border bg-[color:var(--ink)]/60 p-1">
+        {tabs.map((t) => (
+          <button
+            key={t.label}
+            type="button"
+            className={`flex flex-1 items-center justify-center gap-1.5 rounded-md px-3 py-1.5 text-xs ${
+              t.active
+                ? "bg-[color:var(--brass)]/15 text-[color:var(--brass)]"
+                : "text-muted-foreground"
+            }`}
+          >
+            <t.icon className="h-3.5 w-3.5" />
+            <span>{t.label}</span>
+            <span className="opacity-70">{t.count}</span>
+          </button>
+        ))}
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <div className="rounded-lg border border-border bg-[color:var(--ink)]/60 p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--brass)]/15 text-[color:var(--brass)]">
+                <Wand2 className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-[color:var(--ivory)]">
+                  Old Merra
+                </div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Green Hag · CR 5
+                </div>
+              </div>
+            </div>
+          </div>
+          <p className="text-xs leading-relaxed text-muted-foreground">
+            Pretends to be the miller. Offers stew. Asks each PC's true name —
+            she collects them.
+          </p>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <Tag>hook</Tag>
+            <Tag>secret</Tag>
+            <Tag>from: villain backstory</Tag>
+          </div>
+        </div>
+        <div className="rounded-lg border border-border bg-[color:var(--ink)]/60 p-4">
+          <div className="mb-2 flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <div className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--brass)]/15 text-[color:var(--brass)]">
+                <Shield className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-[color:var(--ivory)]">
+                  The Millhouse Ambush
+                </div>
+                <div className="text-[10px] uppercase tracking-wider text-muted-foreground">
+                  Party lvl 5 · Hard
+                </div>
+              </div>
+            </div>
+          </div>
+          <ul className="space-y-1 text-xs text-muted-foreground">
+            <li>• Merra (Green Hag) + 2 Twig Blights</li>
+            <li>• Terrain: flour dust, DC 13 Dex to move</li>
+            <li>• Retreats via cellar if bloodied</li>
+          </ul>
+          <div className="mt-3 flex flex-wrap gap-1.5">
+            <Tag>balanced</Tag>
+            <Tag>tactics</Tag>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Tag({ children }: { children: React.ReactNode }) {
+  return (
+    <span
+      className="rounded-full border border-border px-2 py-0.5 text-[10px] text-muted-foreground"
+      style={{ fontFamily: "var(--font-mono)" }}
+    >
+      {children}
+    </span>
+  );
+}
+
+function SyncPanel() {
+  const rows = [
+    { label: "actors/old-merra.json", kind: "Actor" },
+    { label: "actors/twig-blight.json", kind: "Actor ×2" },
+    { label: "scenes/millhouse.json", kind: "Scene" },
+    { label: "journals/hooks.md", kind: "Journal" },
+    { label: "journals/session-13-prep.md", kind: "Journal" },
+  ];
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between rounded-lg border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 px-4 py-3">
+        <div className="flex items-center gap-3">
+          <div className="grid h-8 w-8 place-items-center rounded-full bg-[color:var(--brass)]/25 text-[color:var(--brass)]">
+            <Check className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="text-sm font-semibold text-[color:var(--ivory)]">
+              Synced to Foundry
+            </div>
+            <div className="text-[11px] text-muted-foreground">
+              World: The Hollow Crown · just now
+            </div>
+          </div>
+        </div>
+        <span className="rounded-full bg-[color:var(--brass)]/20 px-2 py-0.5 text-[10px] uppercase tracking-wider text-[color:var(--brass)]">
+          5 items
+        </span>
+      </div>
+      <ul className="divide-y divide-border rounded-lg border border-border bg-[color:var(--ink)]/60">
+        {rows.map((r) => (
+          <li
+            key={r.label}
+            className="flex items-center justify-between gap-3 px-3 py-2 text-xs"
+          >
+            <span
+              className="truncate text-[color:var(--ivory)]/90"
+              style={{ fontFamily: "var(--font-mono)" }}
+            >
+              {r.label}
+            </span>
+            <span className="shrink-0 text-[10px] uppercase tracking-wider text-muted-foreground">
+              {r.kind}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p className="text-[11px] text-muted-foreground">
+        From here it's just you and the table.
+      </p>
+    </div>
   );
 }
 
