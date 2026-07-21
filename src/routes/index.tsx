@@ -1,5 +1,19 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
+import {
+  BookOpen,
+  Check,
+  FileText,
+  Folder,
+  Plus,
+  Search,
+  Shield,
+  Skull,
+  Sparkles,
+  Swords,
+  Users,
+  Wand2,
+} from "lucide-react";
 
 export const Route = createFileRoute("/")({
   component: Index,
@@ -13,6 +27,7 @@ function Index() {
         <Hero />
         <Problem />
         <HowItWorks />
+        <Walkthrough />
         <Scenarios />
         <Waitlist />
       </main>
