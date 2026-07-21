@@ -656,9 +656,11 @@ function Waitlist() {
         body: JSON.stringify({ email: trimmed }),
         redirect: "manual",
       });
-      // Formspark replies with a 302 redirect to its submitted page. We don't need to
-      // follow it; the redirect itself means the email was accepted.
-      if (!res.ok && res.status !== 302) {
+      // Formspark replies with a 302 redirect to its submitted page. Browsers may
+      // report that as an opaque redirect (cross-origin) or a 302. Either way, it
+      // means the email was accepted; we don't need to follow the redirect.
+      const isRedirect = res.type === "opaqueredirect" || res.status === 302;
+      if (!res.ok && !isRedirect) {
         throw new Error("Submission failed");
       }
       setStatus("ok");
