@@ -654,10 +654,11 @@ function Waitlist() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email: trimmed }),
+        redirect: "manual",
       });
-      // Formspark returns a 302 redirect to submitted.formspark.io. Browsers follow
-      // the redirect, so we treat reaching the Formspark confirmation flow as success.
-      if (!res.ok && !res.url.includes("submitted.formspark.io")) {
+      // Formspark replies with a 302 redirect to its submitted page. We don't need to
+      // follow it; the redirect itself means the email was accepted.
+      if (!res.ok && res.status !== 302) {
         throw new Error("Submission failed");
       }
       setStatus("ok");
