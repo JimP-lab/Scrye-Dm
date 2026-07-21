@@ -637,10 +637,10 @@ function Scenarios() {
 
 function Waitlist() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "error" | "ok">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "error" | "ok">("idle");
   const [message, setMessage] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || trimmed.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
@@ -648,9 +648,25 @@ function Waitlist() {
       setMessage("That doesn't look like a valid email.");
       return;
     }
-    setStatus("ok");
-    setMessage("You're on the list. We'll email you before we open the doors.");
-    setEmail("");
+    setStatus("submitting");
+    try {
+      const res = await fetch("https://submit-form.com/sKcbS7wRS", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+      });
+      // Formspark returns a 302 redirect to submitted.formspark.io. Browsers follow
+      // the redirect, so we treat reaching the Formspark confirmation flow as success.
+      if (!res.ok && !res.url.includes("submitted.formspark.io")) {
+        throw new Error("Submission failed");
+      }
+      setStatus("ok");
+      setMessage("You're on the list. We'll email you before we open the doors.");
+      setEmail("");
+    } catch {
+      setStatus("error");
+      setMessage("Something went wrong — try again in a moment.");
+    }
   };
 
   return (
@@ -702,9 +718,10 @@ function Waitlist() {
             />
             <button
               type="submit"
-              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110"
+              disabled={status === "submitting"}
+              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110 disabled:opacity-70"
             >
-              Join waitlist
+              {status === "submitting" ? "Joining..." : "Join waitlist"}
             </button>
           </form>
         )}
