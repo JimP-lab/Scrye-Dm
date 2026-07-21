@@ -637,10 +637,10 @@ function Scenarios() {
 
 function Waitlist() {
   const [email, setEmail] = useState("");
-  const [status, setStatus] = useState<"idle" | "error" | "ok">("idle");
+  const [status, setStatus] = useState<"idle" | "submitting" | "error" | "ok">("idle");
   const [message, setMessage] = useState("");
 
-  const onSubmit = (e: React.FormEvent) => {
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = email.trim();
     if (!trimmed || trimmed.length > 254 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed)) {
@@ -648,9 +648,28 @@ function Waitlist() {
       setMessage("That doesn't look like a valid email.");
       return;
     }
-    setStatus("ok");
-    setMessage("You're on the list. We'll email you before we open the doors.");
-    setEmail("");
+    setStatus("submitting");
+    try {
+      const res = await fetch("https://submit-form.com/sKcbS7wRS", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: trimmed }),
+        redirect: "manual",
+      });
+      // Formspark replies with a 302 redirect to its submitted page. Browsers may
+      // report that as an opaque redirect (cross-origin) or a 302. Either way, it
+      // means the email was accepted; we don't need to follow the redirect.
+      const isRedirect = res.type === "opaqueredirect" || res.status === 302;
+      if (!res.ok && !isRedirect) {
+        throw new Error("Submission failed");
+      }
+      setStatus("ok");
+      setMessage("You're on the list. We'll email you before we open the doors.");
+      setEmail("");
+    } catch {
+      setStatus("error");
+      setMessage("Something went wrong — try again in a moment.");
+    }
   };
 
   return (
@@ -702,9 +721,10 @@ function Waitlist() {
             />
             <button
               type="submit"
-              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110"
+              disabled={status === "submitting"}
+              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110 disabled:opacity-70"
             >
-              Join waitlist
+              {status === "submitting" ? "Joining..." : "Join waitlist"}
             </button>
           </form>
         )}
