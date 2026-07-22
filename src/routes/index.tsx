@@ -1,7 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { useSession } from "@/lib/use-session";
 import {
   BookOpen,
   Check,
@@ -39,7 +37,6 @@ function Index() {
 }
 
 function Nav() {
-  const { user, loading } = useSession();
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/80 backdrop-blur-md">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-5 py-4 sm:px-8">
@@ -51,31 +48,12 @@ function Nav() {
             for foundry
           </span>
         </a>
-        <div className="flex items-center gap-2 sm:gap-3">
-          {!loading && (
-            user ? (
-              <Link
-                to="/app"
-                className="rounded-full border border-border/60 px-3 py-2 text-sm text-muted-foreground transition hover:text-foreground sm:px-4"
-              >
-                Open app
-              </Link>
-            ) : (
-              <Link
-                to="/auth"
-                className="rounded-full border border-border/60 px-3 py-2 text-sm text-muted-foreground transition hover:text-foreground sm:px-4"
-              >
-                Log in
-              </Link>
-            )
-          )}
-          <a
-            href="#waitlist"
-            className="rounded-full border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 px-4 py-2 text-sm font-medium text-[color:var(--brass)] transition hover:bg-[color:var(--brass)]/20"
-          >
-            Join waitlist
-          </a>
-        </div>
+        <a
+          href="#waitlist"
+          className="rounded-full border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 px-4 py-2 text-sm font-medium text-[color:var(--brass)] transition hover:bg-[color:var(--brass)]/20"
+        >
+          Join waitlist
+        </a>
       </div>
     </header>
   );
