@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as AuthenticatedAppIndexRouteImport } from './routes/_authenticated/app.index'
+import { Route as AuthenticatedAppCampaignsIdRouteImport } from './routes/_authenticated/app.campaigns.$id'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -39,17 +40,25 @@ const AuthenticatedAppIndexRoute = AuthenticatedAppIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedAppRoute,
 } as any)
+const AuthenticatedAppCampaignsIdRoute =
+  AuthenticatedAppCampaignsIdRouteImport.update({
+    id: '/campaigns/$id',
+    path: '/campaigns/$id',
+    getParentRoute: () => AuthenticatedAppRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppRouteWithChildren
   '/app/': typeof AuthenticatedAppIndexRoute
+  '/app/campaigns/$id': typeof AuthenticatedAppCampaignsIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/app': typeof AuthenticatedAppIndexRoute
+  '/app/campaigns/$id': typeof AuthenticatedAppCampaignsIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -58,12 +67,13 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/app': typeof AuthenticatedAppRouteWithChildren
   '/_authenticated/app/': typeof AuthenticatedAppIndexRoute
+  '/_authenticated/app/campaigns/$id': typeof AuthenticatedAppCampaignsIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/app' | '/app/'
+  fullPaths: '/' | '/auth' | '/app' | '/app/' | '/app/campaigns/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/app'
+  to: '/' | '/auth' | '/app' | '/app/campaigns/$id'
   id:
     | '__root__'
     | '/'
@@ -71,6 +81,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/app'
     | '/_authenticated/app/'
+    | '/_authenticated/app/campaigns/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -116,15 +127,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppIndexRouteImport
       parentRoute: typeof AuthenticatedAppRoute
     }
+    '/_authenticated/app/campaigns/$id': {
+      id: '/_authenticated/app/campaigns/$id'
+      path: '/campaigns/$id'
+      fullPath: '/app/campaigns/$id'
+      preLoaderRoute: typeof AuthenticatedAppCampaignsIdRouteImport
+      parentRoute: typeof AuthenticatedAppRoute
+    }
   }
 }
 
 interface AuthenticatedAppRouteChildren {
   AuthenticatedAppIndexRoute: typeof AuthenticatedAppIndexRoute
+  AuthenticatedAppCampaignsIdRoute: typeof AuthenticatedAppCampaignsIdRoute
 }
 
 const AuthenticatedAppRouteChildren: AuthenticatedAppRouteChildren = {
   AuthenticatedAppIndexRoute: AuthenticatedAppIndexRoute,
+  AuthenticatedAppCampaignsIdRoute: AuthenticatedAppCampaignsIdRoute,
 }
 
 const AuthenticatedAppRouteWithChildren =
