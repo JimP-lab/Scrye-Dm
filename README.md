@@ -1,5 +1,5 @@
-# Scrye-dm-prep-helper
-Scrye-dm-prep-helper is an ai powered tool that helps dnd players to organize thier campaigns digitally inside foundry.
+# Scrye-dm
+Scrye-dm is an ai powered tool that helps dnd players to organize thier campaigns digitally inside foundry.
 
 # Link Of the tool
 https://scrye-dm-prep-helper.lovable.app/ 
