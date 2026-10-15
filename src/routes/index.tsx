@@ -16,6 +16,16 @@ import {
 } from "lucide-react";
 
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Scrye — Turn rough DM notes into Foundry-ready sessions" },
+      { name: "description", content: "Scrye turns your rough D&D session notes into NPCs, encounters and scenes you can drop straight into Foundry VTT. Join the waitlist." },
+      { property: "og:title", content: "Scrye — Turn rough DM notes into Foundry-ready sessions" },
+      { property: "og:description", content: "Rough notes in, NPCs, encounters and scenes out, ready for Foundry VTT." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
@@ -29,6 +39,7 @@ function Index() {
         <HowItWorks />
         <Walkthrough />
         <Scenarios />
+        <Faq />
         <Waitlist />
       </main>
       <Footer />
@@ -87,18 +98,8 @@ function Hero() {
             NPCs, encounters, and scenes you can drop straight into Foundry VTT. No more
             Thursday-night stat-block panic.
           </p>
-          <div className="mt-9 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:gap-5">
-            <a
-              href="#waitlist"
-              className="inline-flex items-center gap-2 rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] shadow-[0_10px_40px_-10px_oklch(0.78_0.11_78_/_0.6)] transition hover:brightness-110"
-            >
-              Join the waitlist
-              <span aria-hidden>→</span>
-            </a>
-            <span className="text-sm text-muted-foreground">
-              Built by a DM. Free during beta.
-            </span>
-          </div>
+          <WaitlistForm idPrefix="hero" placement="hero" />
+          <p className="text-sm text-muted-foreground">Built by a DM. Free during beta.</p>
         </div>
       </div>
       <div className="mx-auto max-w-6xl border-t border-border/60 px-5 sm:px-8" />
@@ -635,7 +636,13 @@ function Scenarios() {
   );
 }
 
-function Waitlist() {
+function getSource() {
+  if (typeof window === "undefined") return "direct";
+  const p = new URLSearchParams(window.location.search);
+  return (p.get("src") || p.get("utm_source") || "direct").slice(0, 60);
+}
+
+function WaitlistForm({ idPrefix, placement }: { idPrefix: string; placement: string }) {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "submitting" | "error" | "ok">("idle");
   const [message, setMessage] = useState("");
@@ -653,16 +660,12 @@ function Waitlist() {
       const res = await fetch("https://submit-form.com/sKcbS7wRS", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: trimmed }),
+        body: JSON.stringify({ email: trimmed, source: getSource(), placement }),
         redirect: "manual",
       });
-      // Formspark replies with a 302 redirect to its submitted page. Browsers may
-      // report that as an opaque redirect (cross-origin) or a 302. Either way, it
-      // means the email was accepted; we don't need to follow the redirect.
+      // Formspark replies with a 302 redirect; opaque redirect means accepted.
       const isRedirect = res.type === "opaqueredirect" || res.status === 302;
-      if (!res.ok && !isRedirect) {
-        throw new Error("Submission failed");
-      }
+      if (!res.ok && !isRedirect) throw new Error("Submission failed");
       setStatus("ok");
       setMessage("You're on the list. We'll email you before we open the doors.");
       setEmail("");
@@ -672,9 +675,106 @@ function Waitlist() {
     }
   };
 
+  const inputId = `${idPrefix}-email`;
+  const msgId = `${idPrefix}-email-msg`;
+
+  if (status === "ok") {
+    return (
+      <div
+        role="status"
+        className="mt-8 max-w-md rounded-2xl border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 p-6"
+      >
+        <div className="mb-2 text-xl font-semibold text-[color:var(--brass)]">You're in.</div>
+        <p className="text-sm text-[color:var(--ivory)]/90">{message}</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8 w-full max-w-md">
+      <form onSubmit={onSubmit} noValidate className="flex flex-col gap-3 sm:flex-row">
+        <label htmlFor={inputId} className="sr-only">
+          Email address
+        </label>
+        <input
+          id={inputId}
+          type="email"
+          required
+          maxLength={254}
+          value={email}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            if (status === "error") setStatus("idle");
+          }}
+          placeholder="dm@yourtable.com"
+          className="flex-1 rounded-full border border-border bg-[color:var(--ink)]/70 px-5 py-3 text-base text-[color:var(--ivory)] placeholder:text-muted-foreground/70 focus:border-[color:var(--brass)] focus:outline-none"
+          aria-invalid={status === "error"}
+          aria-describedby={msgId}
+        />
+        <button
+          type="submit"
+          disabled={status === "submitting"}
+          className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110 disabled:opacity-70"
+        >
+          {status === "submitting" ? "Joining..." : "Join waitlist"}
+        </button>
+      </form>
+      <p
+        id={msgId}
+        className={`mt-3 min-h-[1.25rem] text-sm ${
+          status === "error" ? "text-[color:var(--destructive)]" : "text-muted-foreground"
+        }`}
+      >
+        {status === "error" ? message : status === "idle" ? "No spam. One launch email." : ""}
+      </p>
+    </div>
+  );
+}
+
+function Faq() {
+  const items = [
+    {
+      q: "Is this going to flatten my story into generic AI mush?",
+      a: "No. Scrye works from your notes and your canon — your villain, your town, your weird running jokes. It drafts; you decide what makes it to the table. You stay the author.",
+    },
+    {
+      q: "Do I have to use Foundry?",
+      a: "Foundry VTT is the first target, because importing monsters and journals by hand is the worst part of it. Everything is still readable as plain text if you run on paper.",
+    },
+    {
+      q: "What happens to my campaign notes?",
+      a: "They're yours. They're used to generate content for your campaign, not shared with other users. Full details will be published before beta opens.",
+    },
+    {
+      q: "What does it cost?",
+      a: "Free during beta for everyone on the waitlist. Pricing after that will be announced well before anyone is asked to pay.",
+    },
+  ];
+  return (
+    <section id="faq" className="border-t border-border/60">
+      <div className="mx-auto max-w-3xl px-5 py-20 sm:px-8 sm:py-24">
+        <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">Fair questions</p>
+        <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl">Before you hand over your notes</h2>
+        <div className="mt-10 divide-y divide-border/60 border-y border-border/60">
+          {items.map((it) => (
+            <details key={it.q} className="group py-5">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 text-lg font-medium">
+                {it.q}
+                <span aria-hidden className="text-[color:var(--brass)] transition group-open:rotate-45">+</span>
+              </summary>
+              <p className="mt-3 leading-relaxed text-muted-foreground">{it.a}</p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Waitlist() {
   return (
     <section id="waitlist" className="border-t border-border/60">
-      <div className="mx-auto max-w-3xl px-5 py-24 text-center sm:px-8 sm:py-32">
+      <div className="mx-auto flex max-w-3xl flex-col items-center px-5 py-24 text-center sm:px-8 sm:py-32">
         <p className="mb-3 text-xs uppercase tracking-[0.2em] text-[color:var(--brass)]">Get early access</p>
         <h2 className="text-3xl font-semibold tracking-tight sm:text-4xl md:text-5xl">
           Spend the week thinking about the story,{" "}
@@ -686,56 +786,7 @@ function Waitlist() {
           Early access is invite-only. Waitlist folks get in first, get it free during beta,
           and get to shape what it does next.
         </p>
-
-        {status === "ok" ? (
-          <div
-            role="status"
-            className="mx-auto mt-10 max-w-md rounded-2xl border border-[color:var(--brass)]/40 bg-[color:var(--brass)]/10 p-6"
-          >
-            <div className="mb-2 text-xl font-semibold text-[color:var(--brass)]">You're in.</div>
-            <p className="text-sm text-[color:var(--ivory)]/90">{message}</p>
-          </div>
-        ) : (
-          <form
-            onSubmit={onSubmit}
-            noValidate
-            className="mx-auto mt-10 flex max-w-md flex-col gap-3 sm:flex-row"
-          >
-            <label htmlFor="email" className="sr-only">
-              Email address
-            </label>
-            <input
-              id="email"
-              type="email"
-              required
-              maxLength={254}
-              value={email}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                if (status === "error") setStatus("idle");
-              }}
-              placeholder="dm@yourtable.com"
-              className="flex-1 rounded-full border border-border bg-[color:var(--ink)]/70 px-5 py-3 text-base text-[color:var(--ivory)] placeholder:text-muted-foreground/70 focus:border-[color:var(--brass)] focus:outline-none"
-              aria-invalid={status === "error"}
-              aria-describedby="email-msg"
-            />
-            <button
-              type="submit"
-              disabled={status === "submitting"}
-              className="rounded-full bg-[color:var(--brass)] px-6 py-3 text-base font-semibold text-[color:var(--ink)] transition hover:brightness-110 disabled:opacity-70"
-            >
-              {status === "submitting" ? "Joining..." : "Join waitlist"}
-            </button>
-          </form>
-        )}
-        <p
-          id="email-msg"
-          className={`mt-4 min-h-[1.25rem] text-sm ${
-            status === "error" ? "text-[color:var(--destructive)]" : "text-muted-foreground"
-          }`}
-        >
-          {status === "error" ? message : status === "idle" ? "No spam. One launch email." : ""}
-        </p>
+        <WaitlistForm idPrefix="bottom" placement="bottom" />
       </div>
     </section>
   );
